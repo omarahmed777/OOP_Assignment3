@@ -38,11 +38,10 @@ public class Mapping {
              * use the FileLogger and ConsoleLogger objects
              */
 
-
-
             /** TODO
              * verify if the location is exit
              */
+
 
             /** TODO
              * get a map of the exits for the location

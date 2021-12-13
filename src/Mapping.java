@@ -37,10 +37,14 @@ public class Mapping {
              * get the location and print its description to both console and file
              * use the FileLogger and ConsoleLogger objects
              */
+            locationMap.get(location);
 
             /** TODO
              * verify if the location is exit
              */
+            if (locationMap.get(location).equals(0)){
+                break;
+            }
 
 
             /** TODO

@@ -7,7 +7,7 @@ public class LocationMap implements Map<Integer, Location> {
     private static final String LOCATIONS_FILE_NAME =  "locations.txt";
     private static final String DIRECTIONS_FILE_NAME =  "directions.txt";
 
-    static HashMap<Integer, Location> locations;
+    static HashMap<Integer, Location> locations = new HashMap<>();
     static {
         FileLogger fileLogger = new FileLogger();
         ConsoleLogger consoleLogger = new ConsoleLogger();
@@ -36,10 +36,9 @@ public class LocationMap implements Map<Integer, Location> {
                 }
                 //Creates a substring from comma found to the end of the line
                 description = line.substring(commaFound + 1, line.length() - 1);
-                HashMap<String, Integer> exits = new HashMap<>(); //Create empty hashmap
+                Map<String, Integer> exits = new HashMap<>(); //Create empty hashmap
                 Location location = new Location(locId, description, exits);
                 locations.put(locId, location); //Add to locations HashMap
-                line = br.readLine();
             }
         } catch (IOException e) {
             System.out.println("This file does not exist.");
@@ -66,12 +65,10 @@ public class LocationMap implements Map<Integer, Location> {
                     location = Integer.parseInt(arr[0]);
                     direction = arr[1];
                     destination = Integer.parseInt(arr[2]);
+                    exits.put(direction, destination);
+                    //Location locationObj = new Location();
                 }
                 exits.put(direction, destination);
-//              for (Location locationObj : arr) {
-//
-//                }
-                line = br.readLine();
             }
         } catch (IOException e) {
             System.out.println("This file does not exist.");

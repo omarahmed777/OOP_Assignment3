@@ -60,15 +60,13 @@ public class LocationMap implements Map<Integer, Location> {
             while ((line = br.readLine()) != null) {
                 fileLogger.log(line); //Save to file & console
                 consoleLogger.log(line);
-                for (int i=0;i<line.length();i++) {
-                    arr = br.readLine().split(",");
-                    location = Integer.parseInt(arr[0]);
-                    direction = arr[1];
-                    destination = Integer.parseInt(arr[2]);
-                    exits.put(direction, destination);
-                    //Location locationObj = new Location();
-                }
+                arr = line.split(",", 3);
+                location = Integer.parseInt(arr[0]);
+                direction = arr[1];
+                destination = Integer.parseInt(arr[2]);
                 exits.put(direction, destination);
+                Location locationObj = new Location(location, exits.get(direction).toString(), exits);
+                locations.put(location, locationObj);
             }
         } catch (IOException e) {
             System.out.println("This file does not exist.");
@@ -77,34 +75,22 @@ public class LocationMap implements Map<Integer, Location> {
 
     @Override
     public int size() {
-        if (locations.size() > Integer.MAX_VALUE)
-            return Integer.MAX_VALUE;
-        else
-            return LocationMap.locations.size();
+        return LocationMap.locations.size();
     }
 
     @Override
     public boolean isEmpty() {
-        if (locations==null)
-            return true;
-        else
-            return false;
+        return locations.size() == 0;
     }
 
     @Override
     public boolean containsKey(Object key) {
-        if (locations.containsKey(key))
-            return true;
-        else
-            return false;
+        return locations.containsKey(key);
     }
 
     @Override
     public boolean containsValue(Object value) {
-        if (locations.containsValue(value))
-            return true;
-        else
-            return false;
+        return locations.containsValue(value);
     }
 
     @Override

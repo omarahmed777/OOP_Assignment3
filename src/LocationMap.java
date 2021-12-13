@@ -111,10 +111,7 @@ public class LocationMap implements Map<Integer, Location> {
 
     @Override
     public Location remove(Object key) {
-        if (locations.containsKey(key))
-            return locations.remove(key);
-        else
-            return null;
+        return locations.remove(key);
     }
 
     @Override //Check this one?

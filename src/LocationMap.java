@@ -1,4 +1,3 @@
-import java.awt.*;
 import java.io.*;
 import java.util.*;
 
@@ -8,7 +7,7 @@ public class LocationMap implements Map<Integer, Location> {
     private static final String LOCATIONS_FILE_NAME =  "locations.txt";
     private static final String DIRECTIONS_FILE_NAME =  "directions.txt";
 
-    static HashMap<Integer, Location> locations;
+    static HashMap<Integer, Location> locations = new HashMap<>();
     static {
         FileLogger fileLogger = new FileLogger();
         ConsoleLogger consoleLogger = new ConsoleLogger();
@@ -29,7 +28,7 @@ public class LocationMap implements Map<Integer, Location> {
                 //Prints all locations and descriptions to both console and file
                 fileLogger.log(line);
                 consoleLogger.log(line);
-                //Find the index where the comma is
+                //Find the index where the first occurrence of comma is
                 commaFound = line.indexOf(',');
                 if (commaFound != -1){ //Makes sure a comma is found in the file
                     // Creates a substring till comma is found, converts to Integer
@@ -37,10 +36,9 @@ public class LocationMap implements Map<Integer, Location> {
                 }
                 //Creates a substring from comma found to the end of the line
                 description = line.substring(commaFound + 1, line.length() - 1);
-                HashMap<String, Integer> exits = new HashMap<>(); //Create empty hashmap
+                Map<String, Integer> exits = new HashMap<>(); //Create empty hashmap
                 Location location = new Location(locId, description, exits);
                 locations.put(locId, location); //Add to locations HashMap
-                line = br.readLine();
             }
         } catch (IOException e) {
             System.out.println("This file does not exist.");
@@ -55,44 +53,24 @@ public class LocationMap implements Map<Integer, Location> {
          * for each location, create a new location object and add its exit
          */
         try { BufferedReader br = new BufferedReader(new FileReader(DIRECTIONS_FILE_NAME));
-            String line, direction = ""; //Needs initialisation to work
-            int location = 0, destination = 0; //Needs initialisation to work
-            StringBuilder sbLocation = new StringBuilder(),
-                    sbDirection = new StringBuilder(),
-                    sbDestination = new StringBuilder();
-            boolean firstCommaFound = false, secondCommaFound = false;
+            String line, direction = "";
+            String[] arr;
+            int location = 0, destination = 0;
+            LinkedHashMap<String, Integer> exits = new LinkedHashMap<>();
             while ((line = br.readLine()) != null) {
-                fileLogger.log(line);
+                fileLogger.log(line); //Save to file & console
                 consoleLogger.log(line);
-                for (int i=0;i<line.length();i++){
-                    //Save location
-                    if (line.charAt(i) != ',' && !firstCommaFound) {
-                        sbLocation.append(line.charAt(i));
-                        location = location + Integer.parseInt(sbLocation.toString());
-                    } else if (line.charAt(i) == ',' && !firstCommaFound) {
-                        firstCommaFound = true;
-                    }
-                    //Save direction
-                    else if (line.charAt(i) != ',' && firstCommaFound && !secondCommaFound) {
-                        sbDirection.append(line.charAt(i));
-                        direction = direction + sbDirection;
-                    } else if (line.charAt(i) == ',' && firstCommaFound && !secondCommaFound){
-                        secondCommaFound = true;
-                    }
-                    //Save destination
-                    else {
-                        sbDestination.append(line.charAt(i));
-                        destination = destination + Integer.parseInt(sbDestination.toString());
-                    }
-                }
-                for (Location locationObj : locations){
-                    locationObj.addExit(direction, location);
-                }
+                arr = line.split(",", 3);
+                location = Integer.parseInt(arr[0]);
+                direction = arr[1];
+                destination = Integer.parseInt(arr[2]);
+                exits.put(direction, destination);
+                Location locationObj = new Location(location, exits.get(direction).toString(), exits);
+                locations.put(location, locationObj);
             }
         } catch (IOException e) {
             System.out.println("This file does not exist.");
         }
-
     }
 
     @Override
@@ -102,49 +80,44 @@ public class LocationMap implements Map<Integer, Location> {
 
     @Override
     public boolean isEmpty() {
-        if (locations==null)
-            return true;
-        else
-            return false;
+        return locations.size() == 0;
     }
 
     @Override
     public boolean containsKey(Object key) {
-        if (locations.containsKey(key))
-            return true;
-        else
-            return false;
+        return locations.containsKey(key);
     }
 
     @Override
     public boolean containsValue(Object value) {
-        if (locations.containsValue(value))
-            return true;
-        else
-            return false;
+        return locations.containsValue(value);
     }
 
     @Override
     public Location get(Object key) {
-
-        return locations.get(key);
+        if (locations.get(key) == null)
+            return null;
+        else
+            return locations.get(key);
     }
 
     @Override
     public Location put(Integer key, Location value) {
         if (locations.containsKey(key))
             return locations.replace(key, value);
-        else {
+        else
             return locations.putIfAbsent(key, value);
-        }
     }
 
     @Override
     public Location remove(Object key) {
-        return locations.remove(key);
+        if (locations.containsKey(key))
+            return locations.remove(key);
+        else
+            return null;
     }
 
-    @Override
+    @Override //Check this one?
     public void putAll(Map<? extends Integer, ? extends Location> m) {
         locations.putAll(m);
     }

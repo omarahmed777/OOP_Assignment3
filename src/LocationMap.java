@@ -4,10 +4,11 @@ import java.util.*;
 //class that behaves like a map
 public class LocationMap implements Map<Integer, Location> {
 
-    private static final String LOCATIONS_FILE_NAME =  "locations.txt";
-    private static final String DIRECTIONS_FILE_NAME =  "directions.txt";
+    private static final String LOCATIONS_FILE_NAME = "locations.txt";
+    private static final String DIRECTIONS_FILE_NAME = "directions.txt";
 
     static HashMap<Integer, Location> locations = new HashMap<>();
+
     static {
         FileLogger fileLogger = new FileLogger();
         ConsoleLogger consoleLogger = new ConsoleLogger();
@@ -21,21 +22,30 @@ public class LocationMap implements Map<Integer, Location> {
          * put each location in the locations HashMap using temporary empty hashmaps for exits
          */
 
-        try { BufferedReader br = new BufferedReader(new FileReader(LOCATIONS_FILE_NAME));
-            String line, description;
-            int locId = 0, commaFound; //Needs initialisation to work
+        try {
+            BufferedReader br = new BufferedReader(new FileReader(LOCATIONS_FILE_NAME));
+            String line, description, message;
+            int locId = 0, commaFound;
+            boolean availableLocations = false;
             while ((line = br.readLine()) != null) { //While end of file is not reached
-                //Prints all locations and descriptions to both console and file
-                fileLogger.log(line);
-                consoleLogger.log(line);
+                if (!availableLocations){ //Prints "Available locations:" only once
+                    message = "Available locations:";
+                    fileLogger.log(message);
+                    consoleLogger.log(message);
+                    availableLocations = true;
+                }
                 //Find the index where the first occurrence of comma is
                 commaFound = line.indexOf(',');
-                if (commaFound != -1){ //Makes sure a comma is found in the file
+                if (commaFound != -1) { //Makes sure a comma is found in the file
                     // Creates a substring till comma is found, converts to Integer
                     locId = Integer.parseInt(line.substring(0, commaFound));
                 }
                 //Creates a substring from comma found to the end of the line
-                description = line.substring(commaFound + 1, line.length() - 1);
+                description = line.substring(commaFound + 1);
+                //Prints all locations and descriptions to both console and file
+                message = (locId +": "+description);
+                fileLogger.log(message);
+                consoleLogger.log(message);
                 Map<String, Integer> exits = new HashMap<>(); //Create empty hashmap
                 Location location = new Location(locId, description, exits);
                 locations.put(locId, location); //Add to locations HashMap
@@ -52,20 +62,31 @@ public class LocationMap implements Map<Integer, Location> {
          * check the ExpectedOutput files
          * for each location, create a new location object and add its exit
          */
-        try { BufferedReader br = new BufferedReader(new FileReader(DIRECTIONS_FILE_NAME));
-            String line, direction = "";
+        try {
+            BufferedReader br = new BufferedReader(new FileReader(DIRECTIONS_FILE_NAME));
+            String line, direction, message;
             String[] arr;
-            int location = 0, destination = 0;
-            LinkedHashMap<String, Integer> exits = new LinkedHashMap<>();
+            int location, destination;
+            boolean availableDirections = false;
             while ((line = br.readLine()) != null) {
-                fileLogger.log(line); //Save to file & console
-                consoleLogger.log(line);
+                if (!availableDirections){ //Prints "Available directions:" only once
+                    message = "Available directions:";
+                    fileLogger.log(message);
+                    consoleLogger.log(message);
+                    availableDirections = true;
+                }
+                //Split each line into its location, direction, destination
                 arr = line.split(",", 3);
                 location = Integer.parseInt(arr[0]);
                 direction = arr[1];
                 destination = Integer.parseInt(arr[2]);
-                exits.put(direction, destination);
-                Location locationObj = new Location(location, exits.get(direction).toString(), exits);
+                //Save output to console and file
+                message = (location+": "+direction+": "+destination);
+                fileLogger.log(message);
+                consoleLogger.log(message);
+                //Create new Location object and add its exit
+                Location locationObj = new Location(location, locations.get(location).getDescription(), locations.get(location).getExits());
+                locationObj.addExit(direction, destination);
                 locations.put(location, locationObj);
             }
         } catch (IOException e) {
@@ -75,7 +96,7 @@ public class LocationMap implements Map<Integer, Location> {
 
     @Override
     public int size() {
-        return LocationMap.locations.size();
+        return locations.size();
     }
 
     @Override
@@ -114,7 +135,7 @@ public class LocationMap implements Map<Integer, Location> {
         return locations.remove(key);
     }
 
-    @Override //Check this one?
+    @Override
     public void putAll(Map<? extends Integer, ? extends Location> m) {
         locations.putAll(m);
     }

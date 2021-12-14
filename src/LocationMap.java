@@ -19,7 +19,7 @@ public class LocationMap implements Map<Integer, Location> {
             int locId = 0, commaFound;
             boolean availableLocations = false;
             while ((line = br.readLine()) != null) { //While end of file is not reached
-                if (!availableLocations){ //Prints "Available locations:" only once
+                if (!availableLocations) { //Prints "Available locations:" only once
                     message = "Available locations:";
                     fileLogger.log(message);
                     consoleLogger.log(message);
@@ -34,7 +34,7 @@ public class LocationMap implements Map<Integer, Location> {
                 //Creates a substring from comma found to the end of the line
                 description = line.substring(commaFound + 1);
                 //Prints all locations and descriptions to both console and file
-                message = (locId +": "+description);
+                message = (locId + ": " + description);
                 fileLogger.log(message);
                 consoleLogger.log(message);
                 Map<String, Integer> exits = new HashMap<>(); //Create empty hashmap
@@ -52,7 +52,7 @@ public class LocationMap implements Map<Integer, Location> {
             int location, destination;
             boolean availableDirections = false;
             while ((line = br.readLine()) != null) {
-                if (!availableDirections){ //Prints "Available directions:" only once
+                if (!availableDirections) { //Prints "Available directions:" only once
                     message = "Available directions:";
                     fileLogger.log(message);
                     consoleLogger.log(message);
@@ -64,7 +64,7 @@ public class LocationMap implements Map<Integer, Location> {
                 direction = arr[1];
                 destination = Integer.parseInt(arr[2]);
                 //Save output to console and file
-                message = (location+": "+direction+": "+destination);
+                message = (location + ": " + direction + ": " + destination);
                 fileLogger.log(message);
                 consoleLogger.log(message);
                 //Create new Location object and add its exit

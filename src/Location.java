@@ -31,7 +31,6 @@ public class Location {
     }
 
     public Map<String, Integer> getExits() {
-        LinkedHashMap<String, Integer> exitsCopy = this.exits;
-        return exitsCopy;
+        return this.exits;
     }
 }

@@ -20,10 +20,10 @@ public class Mapping {
         vocabulary.put("SOUTH", "S");
         vocabulary.put("EAST", "E");
         vocabulary.put("WEST", "W");
-        vocabulary.put("NORTH EAST", "NE");
-        vocabulary.put("NORTH WEST", "NW");
-        vocabulary.put("SOUTH EAST", "SE");
-        vocabulary.put("SOUTH WEST", "SW");
+        vocabulary.put("NORTHEAST", "NE");
+        vocabulary.put("NORTHWEST", "NW");
+        vocabulary.put("SOUTHEAST", "SE");
+        vocabulary.put("SOUTHWEST", "SW");
         vocabulary.put("UP", "U");
         vocabulary.put("DOWN", "D");
     }
@@ -46,7 +46,7 @@ public class Mapping {
             /** TODO
              * verify if the location is exit
              */
-            if (locationMap.get(location).getLocationId() == 0){
+            if (locationMap.get(location).getLocationId() == 0) {
                 break;
             }
 
@@ -83,15 +83,17 @@ public class Mapping {
              * if multiple viable directions are specified in the input, choose the last one
              */
             boolean valid = false;
-            if (directionInput.length() == 1 || directionInput.length() == 2){ //If letter direction is entered e.g. N, SE, NW, etc.
-                if (vocabulary.containsValue(directionInput)){
+            boolean letterDirection = false;
+            if (directionInput.length() <= 2 && !(directionInput.equals("UP"))) {
+                letterDirection = true;
+                if (vocabulary.containsValue(directionInput)) {
                     valid = true;
                 }
             } else {
                 String[] arr = directionInput.split(" ");
-                for(int i=0; i<arr.length;i++){ //If multiple viable words are entered, directionInput is set to last valid word
-                    if (vocabulary.containsKey(arr[i])){
-                        directionInput = arr[i];
+                for (int i = 0; i < arr.length; i++) { //If multiple viable words are entered, directionInput is set to last valid word
+                    if (vocabulary.containsKey(arr[i])) {
+                        directionInput = arr[i].toUpperCase();
                         valid = true;
                     }
                 }
@@ -102,9 +104,18 @@ public class Mapping {
              * otherwise print an error message (to both console and file)
              * check the ExpectedOutput files
              */
-            if (valid){
-                location = exits.get(directionInput);
-            } else {
+            try {
+                if (valid) {
+                    if (letterDirection) {
+                        location = exits.get(directionInput);
+                    } else {
+                        location = exits.get(vocabulary.get(directionInput));
+                    }
+                } else {
+                    consoleLogger.log("You cannot go in that direction");
+                    fileLogger.log("You cannot go in that direction");
+                }
+            } catch (NullPointerException e) {
                 consoleLogger.log("You cannot go in that direction");
                 fileLogger.log("You cannot go in that direction");
             }

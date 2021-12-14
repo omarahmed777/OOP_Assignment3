@@ -13,15 +13,6 @@ public class LocationMap implements Map<Integer, Location> {
         FileLogger fileLogger = new FileLogger();
         ConsoleLogger consoleLogger = new ConsoleLogger();
 
-        /** TODO
-         * Read from LOCATIONS_FILE_NAME so that a user can navigate from one location to another
-         * use try-with-resources/catch block for the FileReader
-         * extract the location and the description on each line
-         * print all locations and descriptions to both console and file
-         * check the ExpectedOutput files
-         * put each location in the locations HashMap using temporary empty hashmaps for exits
-         */
-
         try {
             BufferedReader br = new BufferedReader(new FileReader(LOCATIONS_FILE_NAME));
             String line, description, message;
@@ -54,14 +45,6 @@ public class LocationMap implements Map<Integer, Location> {
             System.out.println("This file does not exist.");
         }
 
-        /**TODO
-         * Read from DIRECTIONS_FILE_NAME so that a user can move from A to B, i.e. current location to next location
-         * use try-with-resources/catch block for the FileReader
-         * extract the 3 elements  on each line: location, direction, destination
-         * print all locations, directions and destinations to both console and file
-         * check the ExpectedOutput files
-         * for each location, create a new location object and add its exit
-         */
         try {
             BufferedReader br = new BufferedReader(new FileReader(DIRECTIONS_FILE_NAME));
             String line, direction, message;
